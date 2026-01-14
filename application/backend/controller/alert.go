@@ -47,7 +47,7 @@ func CreateAlert(c *gin.Context) {
 		return
 	}
 
-	alertLevel, err := strconv.Atoi(alertLevelStr)
+	_, err := strconv.Atoi(alertLevelStr)
 	if err != nil {
 		c.JSON(200, gin.H{
 			"message": "异常等级格式错误",
@@ -86,7 +86,7 @@ func CreateRecall(c *gin.Context) {
 		return
 	}
 
-	recallLevel, err := strconv.Atoi(recallLevelStr)
+	_, err := strconv.Atoi(recallLevelStr)
 	if err != nil {
 		c.JSON(200, gin.H{
 			"message": "召回等级格式错误",
