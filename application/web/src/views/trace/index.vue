@@ -1,7 +1,6 @@
 <template>
   <div class="trace-container">
 
-    <!-- 头部 -->
     <div class="trace-header">
       <div class="search-section">
         <el-input v-model="input" placeholder="请输入溯源码查询" style="width:300px;margin-right:15px"/>
@@ -19,33 +18,25 @@
 
     <!-- 地图 -->
     <el-dialog title="供应链可视化地图" :visible.sync="showSupplyChainMap" width="900px" top="5vh">
-      <supply-chain-map :trace-data="tracedata[0] || {}"/>
+      <supply-chain-map :trace-data="tracedata.length ? tracedata[0] : {}"/>
     </el-dialog>
 
     <!-- 产品二维码 -->
     <product-qr-display
       :visible.sync="showProductQRDialog"
-      :traceability-code="currentProduct?.traceability_code || ''"
-      :product-name="currentProduct?.farmer_input?.fa_fruitName || ''"
-      :product-info="currentProduct?.farmer_input || {}"
+      :traceability-code="currentProduct ? currentProduct.traceability_code : ''"
+      :product-name="currentProduct && currentProduct.farmer_input ? currentProduct.farmer_input.fa_fruitName : ''"
+      :product-info="currentProduct && currentProduct.farmer_input ? currentProduct.farmer_input : {}"
     />
 
     <!-- 表格 -->
     <el-table :data="tracedata" style="width:100%">
 
-      <el-table-column type="expand">
-        <template slot-scope="props">
-          <pre style="white-space: pre-wrap">{{ props.row }}</pre>
-        </template>
-      </el-table-column>
-
       <el-table-column label="溯源码">
         <template slot-scope="scope">
           <div class="trace-code-cell">
             <span>{{ scope.row.traceability_code }}</span>
-            <el-button type="text" size="mini" @click="openProductQR(scope.row)">
-              二维码
-            </el-button>
+            <el-button type="text" size="mini" @click="openProductQR(scope.row)">二维码</el-button>
           </div>
         </template>
       </el-table-column>
@@ -142,10 +133,9 @@ export default {
     },
 
     FruitInfo() {
-      const formData = new FormData()
-      formData.append('traceability_code', this.input)
-
-      getFruitInfo(formData).then(res => {
+      const fd = new FormData()
+      fd.append('traceability_code', this.input)
+      getFruitInfo(fd).then(res => {
         this.tracedata = [JSON.parse(res.data)]
       })
     },
