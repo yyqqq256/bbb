@@ -2,6 +2,7 @@
   <div class="qr-scanner-container">
     <div class="scanner-header">
       <h3>二维码扫描</h3>
+
       <el-button
         class="close-btn"
         icon="el-icon-close"
@@ -45,6 +46,7 @@
 
     <div class="manual-input-section">
       <el-divider>或手动输入</el-divider>
+
       <el-input
         v-model="manualCode"
         clearable
@@ -104,22 +106,22 @@ export default {
 
         this.scanning = true
         this.$message.success('扫描已启动')
-      } catch (error) {
-        console.error('启动扫描失败:', error)
+      } catch (err) {
+        console.error('启动扫描失败:', err)
         this.$message.error('无法启动摄像头，请检查权限设置')
       }
     },
 
     async stopScanning() {
-      if (this.html5QrCode) {
-        try {
-          await this.html5QrCode.stop()
-          this.html5QrCode.clear()
-          this.scanning = false
-          this.$message.info('扫描已停止')
-        } catch (error) {
-          console.error('停止扫描失败:', error)
-        }
+      if (!this.html5QrCode) return
+
+      try {
+        await this.html5QrCode.stop()
+        this.html5QrCode.clear()
+        this.scanning = false
+        this.$message.info('扫描已停止')
+      } catch (err) {
+        console.error('停止扫描失败:', err)
       }
     },
 
@@ -135,8 +137,8 @@ export default {
       this.$emit('scan-success', decodedText)
     },
 
-    onScanFailure(error) {
-      console.log('扫描中...', error)
+    onScanFailure(err) {
+      console.log('扫描中...', err)
     },
 
     handleManualInput() {
